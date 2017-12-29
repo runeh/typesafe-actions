@@ -21,20 +21,25 @@ describe('isActionOf', () => {
   // check object, empty array, primitives
 
   it('should succeed on action with correct type', () => {
-
     const isActionOfIncrement = isActionOf(increment);
     expect(isActionOfIncrement(increment())).toBeTruthy();
+    expect(isActionOfIncrement(add(2))).toBeFalsy();
 
     const isActionOfIncrementOrAdd = isActionOf([increment, add]);
     expect(isActionOfIncrementOrAdd(increment())).toBeTruthy();
     expect(isActionOfIncrementOrAdd(add(2))).toBeTruthy();
+    expect(isActionOfIncrementOrAdd(multiply(2))).toBeFalsy();
   });
 
   it('should fail on action with incorrect type', () => {
     const isActionOfIncrement = isActionOf(increment);
     expect(isActionOfIncrement(add(2))).toBeFalsy();
-    const isActionOfIncrement2 = isActionOf([increment]);
-    expect(isActionOfIncrement2(add(2))).toBeFalsy();
+    expect(isActionOfIncrement(increment())).toBeTruthy();
+
+    const isActionOfIncrementOrMultiply = isActionOf([increment, add]);
+    expect(isActionOfIncrementOrMultiply(multiply(2))).toBeFalsy();
+    expect(isActionOfIncrementOrMultiply(increment())).toBeTruthy();
+    expect(isActionOfIncrementOrMultiply(add(2))).toBeTruthy();
   });
 
   it('should correctly assert type for EmptyAction', (done) => {
