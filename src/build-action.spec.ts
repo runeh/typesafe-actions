@@ -38,6 +38,26 @@ describe('buildAction', () => {
     expect(type).toBe('SET');
   });
 
+  it('with string literal type payload', () => {
+    type NetStatus = 'up' | 'down' | 'unknown';
+    const set = buildAction('SET').payload<NetStatus>();
+    const action: { type: 'SET'; payload: NetStatus } = set('up');
+    expect(action).toEqual({ type: 'SET', payload: 'up' });
+    const type: 'SET' = getType(set);
+    expect(type).toBe('SET');
+  });
+
+  it('with union payload', () => {
+    type UserId = string | number;
+    const set = buildAction('SET').payload<UserId>();
+    const action1: { type: 'SET'; payload: UserId } = set('abcd');
+    expect(action1).toEqual({ type: 'SET', payload: 'abcd' });
+    const action2: { type: 'SET'; payload: UserId } = set(1234);
+    expect(action2).toEqual({ type: 'SET', payload: 1234 });
+    const type: 'SET' = getType(set);
+    expect(type).toBe('SET');
+  });
+
   it('with payload and no params', () => {
     const showNotification = buildAction('SHOW_NOTIFICATION').fsa(() => 'hardcoded message');
     const action: { type: 'SHOW_NOTIFICATION'; payload: string } = showNotification();
